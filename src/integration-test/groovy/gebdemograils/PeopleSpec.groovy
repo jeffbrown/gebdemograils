@@ -50,7 +50,7 @@ class PeopleSpec extends GebSpec {
 
         and:
         peopleRows[0].firstName == 'Jeff'
-        peopleRows[1].lastName == 'Beck'
+        peopleRows[0].lastName == 'Beck'
 
         and:
         peopleRows[1].firstName == 'David'
@@ -58,6 +58,6 @@ class PeopleSpec extends GebSpec {
 
         and:
         peopleRows[2].firstName == 'Robert'
-        peopleRows[2].lastName == 'Frip'
+        peopleRows[2].lastName == 'Fripp'
     }
 }
