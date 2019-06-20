@@ -60,4 +60,24 @@ class PeopleSpec extends GebSpec {
         peopleRows[2].firstName == 'Robert'
         peopleRows[2].lastName == 'Fripp'
     }
+
+    void 'test csv download'() {
+        when:
+        to PersonListPage
+
+        then:
+        at PersonListPage
+
+        when:
+        byte[] downloadBytes = downloadBytes(csvLink.@href)
+
+        def downloadContent = new String(downloadBytes)
+        def lines = downloadContent.split('\n')
+
+        then:
+        lines.length == 3
+        lines[0] == 'Jeff,Beck'
+        lines[1] == 'David,Gilmour'
+        lines[2] == 'Robert,Fripp'
+    }
 }

@@ -87,6 +87,22 @@ class PersonController {
         }
     }
 
+    def download() {
+        def people = personService.list()
+
+        def outs = response.outputStream
+        response.status = OK.value()
+        response.contentType = "text/csv;charset=UTF-8";
+        response.setHeader "Content-disposition", "attachment; filename=people.csv"
+
+        people.each { person ->
+            outs << "${person.firstName},${person.lastName}\n"
+        }
+
+        outs.flush()
+        outs.close()
+    }
+
     protected void notFound() {
         request.withFormat {
             form multipartForm {

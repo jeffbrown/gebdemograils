@@ -11,6 +11,7 @@ class PersonListPage extends Page {
     }
 
     static content = {
+        csvLink { $('a#csv-link') }
         peopleRows {
             $('table tbody tr').moduleList PersonRow
         }
