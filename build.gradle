@@ -10,6 +10,10 @@ buildscript {
     }
 }
 
+plugins {
+    id 'com.energizedwork.webdriver-binaries' version '1.4'
+}
+
 version "0.1"
 group "gebdemograils"
 
@@ -80,4 +84,8 @@ tasks.withType(Test) {
 assets {
     minifyJs = true
     minifyCss = true
+}
+
+webdriverBinaries {
+    chromedriver '2.35'
 }
