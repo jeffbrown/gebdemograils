@@ -7,11 +7,12 @@ buildscript {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
         classpath "org.grails.plugins:hibernate5:${gormVersion-".RELEASE"}"
         classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.15.1"
+        classpath "gradle.plugin.com.energizedwork.webdriver-binaries:webdriver-binaries-gradle-plugin:1.4"
     }
 }
 
-plugins {
-    id 'com.energizedwork.webdriver-binaries' version '1.4'
+ext {
+    seleniumVersion = '3.141.59'
 }
 
 version "0.1"
@@ -23,6 +24,7 @@ apply plugin:"war"
 apply plugin:"org.grails.grails-web"
 apply plugin:"asset-pipeline"
 apply plugin:"org.grails.grails-gsp"
+apply plugin: "com.energizedwork.webdriver-binaries"
 
 repositories {
     mavenLocal()
@@ -57,12 +59,22 @@ dependencies {
     runtime "org.apache.tomcat:tomcat-jdbc"
     runtime "com.bertramlabs.plugins:asset-pipeline-grails:2.15.1"
     testCompile "org.grails:grails-gorm-testing-support"
-    testCompile "org.grails.plugins:geb"
+
     testCompile "org.grails:grails-web-testing-support"
-    testCompile "org.grails.plugins:geb:1.1.2"
-    testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
-    testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
-    testRuntime "org.seleniumhq.selenium:selenium-chrome-driver:2.47.1"
+
+    testCompile ("org.grails.plugins:geb") {
+        exclude group: 'org.gebish'
+    }
+    testCompile "org.gebish:geb-spock:3.0.1"
+    testCompile "org.seleniumhq.selenium:selenium-support:$seleniumVersion"
+    testCompile "org.seleniumhq.selenium:selenium-api:$seleniumVersion"
+    testCompile "org.seleniumhq.selenium:selenium-remote-driver:$seleniumVersion"
+
+    testRuntime 'net.sourceforge.htmlunit:htmlunit:2.35.0'
+    testRuntime "org.seleniumhq.selenium:htmlunit-driver:2.35.1"
+    testRuntime "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
+    testRuntime "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
+    testRuntime "org.seleniumhq.selenium:selenium-safari-driver:3.14.0"
 
     testCompile 'org.grails:grails-datastore-rest-client:6.1.7.RELEASE'
 }
@@ -74,18 +86,24 @@ bootRun {
     systemProperty springProfilesActive, System.getProperty(springProfilesActive)
 }
 
-tasks.withType(Test) {
-    systemProperty "geb.env", System.getProperty('geb.env')
-    systemProperty "geb.build.reportsDir", reporting.file("geb/integrationTest")
-    systemProperty "webdriver.chrome.driver", System.getProperty('webdriver.chrome.driver')
-    systemProperty "webdriver.gecko.driver", System.getProperty('webdriver.gecko.driver')
-}
-
 assets {
     minifyJs = true
     minifyCss = true
 }
 
+tasks.withType(Test) {
+    systemProperty "geb.env", System.getProperty('geb.env')
+    systemProperty "geb.build.reportsDir", reporting.file("geb/integrationTest")
+    systemProperty "webdriver.chrome.driver", System.getProperty('webdriver.chrome.driver')
+    systemProperty "webdriver.gecko.driver", System.getProperty('webdriver.gecko.driver')
+    if (!System.getProperty('geb.env') || System.getProperty('geb.env') == 'htmlUnit') {
+        // Reduce HTML Unit verbosity
+        systemProperty 'org.apache.commons.logging.Log', 'org.apache.commons.logging.impl.SimpleLog'
+        systemProperty 'org.apache.commons.logging.simplelog.log.com.gargoylesoftware.htmlunit', 'FATAL'
+    }
+}
+
 webdriverBinaries {
-    chromedriver '2.35'
+    chromedriver '74.0.3729.6'
+    geckodriver '0.24.0'
 }
