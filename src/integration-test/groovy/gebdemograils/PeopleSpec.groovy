@@ -42,7 +42,7 @@ class PeopleSpec extends GebSpec {
         at PersonListPage
 
         and:
-        peopleRows.size() == 3
+        numberOfPeople == 3
 
         and:
         peopleRows[0].firstName == 'Jeff'
