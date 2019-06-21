@@ -4,17 +4,13 @@ import geb.spock.GebSpec
 import grails.plugins.rest.client.RestBuilder
 import grails.testing.mixin.integration.Integration
 import grails.testing.spock.OnceBefore
-import spock.lang.Shared
 
 @Integration
 class PeopleSpec extends GebSpec {
 
-
-    @Shared
-    RestBuilder rest = new RestBuilder()
-
     @OnceBefore
     void makeRestCalls() {
+        RestBuilder rest = new RestBuilder()
         rest.post("http://localhost:${serverPort}/people") {
             header 'Accept', 'application/json'
             json {
