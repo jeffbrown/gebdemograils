@@ -15,5 +15,14 @@ class PersonListPage extends Page {
         peopleRows {
             $('table tbody tr').moduleList PersonRow
         }
+        firstNameLink {firstName -> $('a', text: firstName) }
+    }
+
+    int getNumberOfPeople() {
+        peopleRows.size()
+    }
+
+    void clickFirstName(String name) {
+        firstNameLink(name).click()
     }
 }
